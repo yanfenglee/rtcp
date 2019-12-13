@@ -129,7 +129,7 @@ where
             if self.pos == self.cap && self.read_done {
                 let me = &mut *self;
                 ready!(Pin::new(&mut *me.writer).poll_flush(cx))?;
-                return Poll::Ready(Ok(self.amt));
+                return Poll::Ready(Err(io::Error::new(io::ErrorKind::WriteZero, "copyfinish")));
             }
         }
     }

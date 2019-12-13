@@ -25,7 +25,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let toaddr = toaddr.clone();
 
         spawn(async move {
-            let mut outbound = TcpStream::connect(toaddr).await.unwrap();
+            let mut outbound = TcpStream::connect(toaddr.clone()).await.unwrap();
 
             let (mut ri, mut wi) = inbound.split();
             let (mut ro, mut wo) = outbound.split();
@@ -33,7 +33,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let client_to_server = util::copy(&mut ri, &mut wo);
             let server_to_client = util::copy(&mut ro, &mut wi);
 
-            match join(client_to_server,server_to_client).await {
+            match try_join(client_to_server,server_to_client).await {
                 _ => ()
             }
 
